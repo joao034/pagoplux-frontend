@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { PayboxData } from '../../interfaces';
+import { Component, inject, OnInit } from '@angular/core';
+import { PayboxData, PaymentResponse } from '../../interfaces';
+import { PaymentService } from '../../services/payment.service';
 
 @Component({
-  selector: 'app-payment-button',
+  selector: 'payments-payment-button',
   standalone: true,
   imports: [],
   templateUrl: './payment-button.component.html',
   styleUrl: './payment-button.component.css',
 })
 export class PaymentButtonComponent implements OnInit {
+
+  private readonly paymentService = inject( PaymentService )
 
   private getPayboxData() : PayboxData {
     return {
@@ -121,12 +124,28 @@ export class PaymentButtonComponent implements OnInit {
   ngOnInit(): void {
     (globalThis as any).data = this.getPayboxData();
 
-    (globalThis as any).onAuthorize = ( response: any ) => {
+    (globalThis as any).onAuthorize = ( response: PaymentResponse ) => {
       if( response.status === 'succeeded'){
-        console.log('Pago exitoso: ', response)
+        console.log('Pago exitoso: ', response);
+
+        //set data on transactionData$
+        this.onPaymentSuccess( response.detail.id_transaccion );
+
       }else{
         console.log('Pago sin exito: ', response)
       }
     }
+  }
+
+  onPaymentSuccess( transactionId : string ){
+
+    this.paymentService.getTransaction( transactionId ).subscribe(
+      ( result ) => {
+        this.paymentService.setTransactionData( result );
+      }),
+      ( error : any ) => {
+        console.log(`Error when getting transaction data ${error}`)
+      }
+
   }
 }

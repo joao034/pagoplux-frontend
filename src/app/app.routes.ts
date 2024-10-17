@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { PaymentButtonComponent } from './payments/components';
+import { PaymentPageComponent } from './payments/pages';
 
 export const routes: Routes = [
-  { path:'pagos', component: PaymentButtonComponent }
+  { path:'pagos', component: PaymentPageComponent }
 ];
