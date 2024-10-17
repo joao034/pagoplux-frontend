@@ -1,6 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { PayboxData, PaymentResponse } from '../../interfaces';
-import { PaymentService } from '../../services/payment.service';
 
 @Component({
   selector: 'payments-payment-button',
@@ -11,7 +10,7 @@ import { PaymentService } from '../../services/payment.service';
 })
 export class PaymentButtonComponent implements OnInit {
 
-  private readonly paymentService = inject( PaymentService )
+  @Output() paymentCompleted = new EventEmitter<string>();
 
   private getPayboxData() : PayboxData {
     return {
@@ -128,7 +127,7 @@ export class PaymentButtonComponent implements OnInit {
       if( response.status === 'succeeded'){
         console.log('Pago exitoso: ', response);
 
-        //set data on transactionData$
+        //emit transactionId to PaymentPage
         this.onPaymentSuccess( response.detail.id_transaccion );
 
       }else{
@@ -137,15 +136,7 @@ export class PaymentButtonComponent implements OnInit {
     }
   }
 
-  onPaymentSuccess( transactionId : string ){
-
-    this.paymentService.getTransaction( transactionId ).subscribe(
-      ( result ) => {
-        this.paymentService.setTransactionData( result );
-      }),
-      ( error : any ) => {
-        console.log(`Error when getting transaction data ${error}`)
-      }
-
+  onPaymentSuccess( transactionId: string ) {
+    this.paymentCompleted.emit( transactionId );
   }
 }

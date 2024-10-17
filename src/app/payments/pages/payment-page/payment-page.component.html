@@ -1,3 +1,4 @@
-<payments-payment-button/>
+<payments-payment-button (paymentCompleted)="onPaymentCompleted($event)"/>
 <hr>
-<payments-payment-details [paymentData]="paymentData"/>
+<payments-payment-details [paymentDetails]="paymentDetails"/>
+
