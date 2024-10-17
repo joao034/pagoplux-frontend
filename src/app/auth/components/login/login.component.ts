@@ -23,6 +23,7 @@ export class LoginComponent {
     const { username, password } = this.loginForm.value;
     this.authService.login(username!, password!).subscribe(
       (data) => {
+        this.authService.setUser( data )
         if( data.user ){
           this.router.navigate(['/pagos']);
         }

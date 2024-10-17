@@ -139,4 +139,6 @@ export class PaymentButtonComponent implements OnInit {
   onPaymentSuccess( transactionId: string ) {
     this.paymentCompleted.emit( transactionId );
   }
+
+
 }
